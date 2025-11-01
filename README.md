@@ -22,3 +22,13 @@
 ---
 
 ## made by kya btw
+
+---
+
+## links
+
+[official repo for editor](https://github.com/umdill/editor)
+
+---
+
+note: i did not make this editor at all, i just took ts and made it goated
