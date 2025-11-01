@@ -17,6 +17,7 @@
 
 **arrows and shi**
 
+**auto pixel art (2027)**
 ---
 
 ## made by kya btw
