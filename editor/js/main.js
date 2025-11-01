@@ -1,4 +1,4 @@
-// NOTE: ROTATING LAVA COPY DOES NOT WORK YET, IM FIXING IT LATER!!
+// rotating lava fix !
 function newId() {
     return Date.now() + nextId++;
 }
@@ -602,11 +602,9 @@ function capitalise(e = "") {
     return (e = String(e)).length <= 1 ? e : e[0].toUpperCase() + e.slice(1);
 }
 function pasteClipboard() {
-    if (!clipboard || !currentArea) return; // removed rotatingLava block
-
+    if (!clipboard || !currentArea) return;
     let e = cloneObject(clipboard);
     if (!e) return;
-
     const creators = {
         obstacle: () => createObstacle(e.pos.x, e.pos.y, e.size.x, e.size.y),
         lava: () => createLava(e.pos.x, e.pos.y, e.size.x, e.size.y),
@@ -626,15 +624,15 @@ function pasteClipboard() {
         movingObject: () => createMovingObject(e.size.x, e.size.y, e.objectType, e.points),
         hatReward: () => createHatReward(e.pos.x, e.pos.y, e.reward)
     };
-
-    if (!creators[e.type]) return alert("broken idk contanct @yeahdill " + e.type);
-
-currentArea.objects[t].push(s);
-objectmenu.appendChild(s.element);
-hide(s.element);
-if (selectedObject) hide(selectedObject.element);
-show((selectedObject = s).element);
-
+    if (!creators[e.type]) return alert("broken idk contact @yeahdill " + e.type);
+    let s = creators[e.type]();
+    let t = e.type;
+    currentArea.objects[t].push(s);
+    objectmenu.appendChild(s.element);
+    hide(s.element);
+    if (selectedObject) hide(selectedObject.element);
+    show((selectedObject = s).element);
+}
 (copyBtn.id = "copyObject"),
     (copyBtn.textContent = "Copy Object"),
     contextmenu.appendChild(copyBtn),
