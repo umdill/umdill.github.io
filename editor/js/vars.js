@@ -459,6 +459,11 @@ function cloneObject(obj) {
             vel: p.vel
         }));
     }
+    if (t.type === "rotatingLava") {
+        t.center = { x: t.center.x, y: t.center.y };
+        t.position = { x: t.position.x, y: t.position.y };
+    }
     return t;
 }
+
 
