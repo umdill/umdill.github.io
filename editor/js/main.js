@@ -627,22 +627,14 @@ function pasteClipboard() {
         hatReward: () => createHatReward(e.pos.x, e.pos.y, e.reward)
     };
 
-    if (!creators[e.type]) return alert("Paste not implemented for " + e.type);
+    if (!creators[e.type]) return alert("broken idk contanct @yeahdill " + e.type);
 
-    let s = creators[e.type]();
-    currentArea.objects[e.type].push(s);
-    objectmenu.appendChild(s.element);
-    hide(s.element);
-    if (selectedObject) hide(selectedObject.element);
-    show((selectedObject = s).element);
-}
+currentArea.objects[t].push(s);
+objectmenu.appendChild(s.element);
+hide(s.element);
+if (selectedObject) hide(selectedObject.element);
+show((selectedObject = s).element);
 
-    currentArea.objects[t].push(s),
-        objectmenu.appendChild(s.element),
-        hide(s.element),
-        selectedObject && hide(selectedObject.element),
-        show((selectedObject = s).element);
-}
 (copyBtn.id = "copyObject"),
     (copyBtn.textContent = "Copy Object"),
     contextmenu.appendChild(copyBtn),
