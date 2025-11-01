@@ -13,9 +13,9 @@
 ```soon```
 
 ---
-auto sizing
+**auto sizing**
 
-arrows and shi
+**arrows and shi**
 
 ---
 
