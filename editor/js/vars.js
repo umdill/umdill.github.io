@@ -420,32 +420,45 @@ function blend240([e, t, a], s) {
 }
 let clipboard = null,
     mousePos = { x: 0, y: 0 };
-function clone(e) {
-    if (null === e || "object" != typeof e) return e;
-    if (e instanceof Date) return new Date(e.getTime());
-    if (Array.isArray(e)) return e.map(clone);
-    let t = {};
-    for (let a in e) e.hasOwnProperty(a) && (t[a] = clone(e[a]));
-    return t;
+function clone(value, seen = new WeakMap()) {
+    if (value === null || typeof value !== "object") return value;
+    if (seen.has(value)) return seen.get(value);
+    if (value instanceof Date) return new Date(value.getTime());
+
+    if (Array.isArray(value)) {
+        const arr = [];
+        seen.set(value, arr);
+        for (let i = 0; i < value.length; i++) {
+            arr[i] = clone(value[i], seen);
+        }
+        return arr;
+    }
+
+    const obj = {};
+    seen.set(value, obj);
+    for (const key in value) {
+        if (Object.prototype.hasOwnProperty.call(value, key)) {
+            obj[key] = clone(value[key], seen);
+        }
+    }
+    return obj;
 }
 let nextId = 1;
 function newId() {
     return Date.now() + nextId++;
 }
-function cloneObject(e) { // break ref
-  let savedPointRef = null;
-  if (e.type === "rotatingLava" && e.point && e.point.rotLava === e) {
-    savedPointRef = e.point;
-    delete e.point.rotLava;
-  }
-  const t = clone(e);
-  if (savedPointRef) {
-    savedPointRef.rotLava = e;
-    t.point.rotLava = t;
-  }
-  if (t.type === "teleporter") {
-    t.id = newId();
-  }
-
-  return t;
+function cloneObject(obj) {
+    const t = clone(obj);
+    if (t.type === "teleporter") {
+        t.id = newId();
+    }
+    if (t.type === "movingObject" && t.points) {
+        t.points = t.points.map(p => ({
+            x: p.x,
+            y: p.y,
+            vel: p.vel
+        }));
+    }
+    return t;
 }
+
