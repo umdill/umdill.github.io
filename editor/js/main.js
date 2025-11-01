@@ -3,9 +3,22 @@ function newId() {
     return Date.now() + nextId++;
 }
 function cloneObject(e) {
-    let t = clone(e);
-    return "teleporter" === t.type && (t.id = newId()), t; // fixed teleporters
+  let savedPointRef = null;
+  if (e.type === "rotatingLava" && e.point && e.point.rotLava === e) {
+    savedPointRef = e.point;
+    delete e.point.rotLava;
+  }
+  const t = clone(e);
+  if (savedPointRef) {
+    savedPointRef.rotLava = e;
+    t.point.rotLava = t;
+  }
+  if (t.type === "teleporter") {
+    t.id = newId(); // id fix
+  }
+  return t;
 }
+
 function targetedObject(e) {
     for (let t of types) {
         let s = getObjects(t);
