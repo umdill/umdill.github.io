@@ -602,7 +602,7 @@ function capitalise(e = "") {
     return (e = String(e)).length <= 1 ? e : e[0].toUpperCase() + e.slice(1);
 }
 function pasteClipboard() {
-    if (!clipboard || !currentArea || clipboard.type === "rotatingLava") return;
+    if (!clipboard || !currentArea) return; // removed rotatingLava block
 
     let e = cloneObject(clipboard);
     if (!e) return;
@@ -627,7 +627,7 @@ function pasteClipboard() {
         hatReward: () => createHatReward(e.pos.x, e.pos.y, e.reward)
     };
 
-    if (!creators[e.type]) return alert("we didnt have this added, dm @yeahdill on discord to fix this. enemy: " + e.type);
+    if (!creators[e.type]) return alert("Paste not implemented for " + e.type);
 
     let s = creators[e.type]();
     currentArea.objects[e.type].push(s);
@@ -636,6 +636,7 @@ function pasteClipboard() {
     if (selectedObject) hide(selectedObject.element);
     show((selectedObject = s).element);
 }
+
     currentArea.objects[t].push(s),
         objectmenu.appendChild(s.element),
         hide(s.element),
