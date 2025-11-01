@@ -602,78 +602,40 @@ function capitalise(e = "") {
     return (e = String(e)).length <= 1 ? e : e[0].toUpperCase() + e.slice(1);
 }
 function pasteClipboard() {
-    if (!clipboard || !currentArea || "rotatingLava" === clipboard.type) return;
+    if (!clipboard || !currentArea || clipboard.type === "rotatingLava") return;
+
     let e = cloneObject(clipboard);
     if (!e) return;
-    let t = e.type,
-        s;
-    switch (t) {
-        case "obstacle":
-            s = createObstacle(e.pos.x, e.pos.y, e.size.x, e.size.y);
-            break;
-        case "lava":
-            s = createLava(e.pos.x, e.pos.y, e.size.x, e.size.y);
-            break;
-        case "slime":
-            s = createSlime(e.pos.x, e.pos.y, e.size.x, e.size.y);
-            break;
-        case "ice":
-            s = createIce(e.pos.x, e.pos.y, e.size.x, e.size.y);
-            break;
-        case "block":
-            s = createBlock(e.pos.x, e.pos.y, e.size.x, e.size.y, e.color, e.opacity, e.collide, e.layer);
-            break;
-        case "teleporter":
-            s = createTeleporter(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id, e.targetArea, e.targetId);
-            break;
-        case "text":
-            s = createText(e.pos.x, e.pos.y, e.text);
-            break;
-        case "spawner":
-            s = createSpawner(e.pos.x, e.pos.y, e.size.x, e.size.y, e.enemyType, e.number, e.speed, e.radius);
-            break;
-        case "gravityZone":
-            s = createGravZone(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir);
-            break;
-        case "rotatingLava":
-            s = createRotatingLava(e.pos.x, e.pos.y, e.size.x, e.size.y, e.point.x, e.point.y, e.startAngle, e.speed);
-            break;
-        case "circularObject":
-            s = createCircularObject(e.pos.x, e.pos.y, e.radius, e.objectType);
-            break;
-        case "door":
-            s = createDoor(e.pos.x, e.pos.y, e.size.x, e.size.y, e.linkIds);
-            break;
-        case "switch":
-            s = createSwitch(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id);
-            break;
-        case "button":
-            s = createButton(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id, e.time);
-            break;
-        case "turret":
-            s = createTurret(
-                e.pos.x,
-                e.pos.y,
-                e.region.pos.x,
-                e.region.pos.y,
-                e.region.size.x,
-                e.region.size.y,
-                e.radius,
-                e.speed,
-                e.shootingSpeed,
-                e.overHeat,
-                e.coolDownTime
-            );
-            break;
-        case "movingObject":
-            s = createMovingObject(e.size.x, e.size.y, e.objectType, e.points);
-            break;
-        case "hatReward":
-            s = createHatReward(e.pos.x, e.pos.y, e.reward);
-            break;
-        default:
-            return alert("Paste not implemented for " + t);
-    }
+
+    const creators = {
+        obstacle: () => createObstacle(e.pos.x, e.pos.y, e.size.x, e.size.y),
+        lava: () => createLava(e.pos.x, e.pos.y, e.size.x, e.size.y),
+        slime: () => createSlime(e.pos.x, e.pos.y, e.size.x, e.size.y),
+        ice: () => createIce(e.pos.x, e.pos.y, e.size.x, e.size.y),
+        block: () => createBlock(e.pos.x, e.pos.y, e.size.x, e.size.y, e.color, e.opacity, e.collide, e.layer),
+        teleporter: () => createTeleporter(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id, e.targetArea, e.targetId),
+        text: () => createText(e.pos.x, e.pos.y, e.text),
+        spawner: () => createSpawner(e.pos.x, e.pos.y, e.size.x, e.size.y, e.enemyType, e.number, e.speed, e.radius),
+        gravityZone: () => createGravZone(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir),
+        rotatingLava: () => createRotatingLava(e.pos.x, e.pos.y, e.size.x, e.size.y, e.point.x, e.point.y, e.startAngle, e.speed),
+        circularObject: () => createCircularObject(e.pos.x, e.pos.y, e.radius, e.objectType),
+        door: () => createDoor(e.pos.x, e.pos.y, e.size.x, e.size.y, e.linkIds),
+        switch: () => createSwitch(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id),
+        button: () => createButton(e.pos.x, e.pos.y, e.size.x, e.size.y, e.dir, e.id, e.time),
+        turret: () => createTurret(e.pos.x, e.pos.y, e.region.pos.x, e.region.pos.y, e.region.size.x, e.region.size.y, e.radius, e.speed, e.shootingSpeed, e.overHeat, e.coolDownTime),
+        movingObject: () => createMovingObject(e.size.x, e.size.y, e.objectType, e.points),
+        hatReward: () => createHatReward(e.pos.x, e.pos.y, e.reward)
+    };
+
+    if (!creators[e.type]) return alert("we didnt have this added, dm @yeahdill on discord to fix this. enemy: " + e.type);
+
+    let s = creators[e.type]();
+    currentArea.objects[e.type].push(s);
+    objectmenu.appendChild(s.element);
+    hide(s.element);
+    if (selectedObject) hide(selectedObject.element);
+    show((selectedObject = s).element);
+}
     currentArea.objects[t].push(s),
         objectmenu.appendChild(s.element),
         hide(s.element),
