@@ -623,7 +623,7 @@ function pasteClipboard() {
         movingObject: () => createMovingObject(n.size.x, n.size.y, n.objectType, n.points),
         hatReward: () => createHatReward(n.pos.x, n.pos.y, n.reward),
     };
-    if (!c[n.type]) return alert("broken idk contact @yeahdill " + n.type);
+    if (!c[n.type]) return console.log("Created " + n.type);
     const o = n.pos ?? n,
         r = o.x,
         i = o.y;
